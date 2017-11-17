@@ -14,6 +14,9 @@ Start by installing NuGet package (use http://nuget.techromix.com/nuget as Packa
     Install-Package BrontoConnector
     
 Run the .sql script "bronto_connector_create_tables.sql", that can be found on the root of your project, on your Episerver Commerce database.
+### Prerequisites
+    Episerver.Commerce.Core >= 11.0.0
+    Episerver.CMS.Core >= 10.0.0
 
 ## Configuration
 

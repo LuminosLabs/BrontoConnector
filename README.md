@@ -101,3 +101,69 @@ public interface IContactMapper
 ```
 
 The default implementation can be extended by inheriting these classes or creating completely new mappers that match the contract. Make sure you register these implementations in the application’s structure map container.
+
+If you need more advanced queries to be executed against Bronto SOAP API you can leverage our API Factory and API Facade objects to build the proxy object and get a new session Id. Please see the example below that will read header and footers using Bronto API
+
+```C#
+public class BrontoSoapExtension
+{
+    private readonly BrontoSoapApiFactory _apiFactory;
+    private readonly IBrontoSoapApiFacade _apiFacade;
+
+    public BrontoSoapExtension(BrontoSoapApiFactory apiFactory, IBrontoSoapApiFacade api)
+    {
+        _apiFactory = apiFactory;
+        _apiFacade = api;
+    }
+
+    public void DoSomething()
+    {
+        var brontoSoapApiProxy = _apiFactory.Create();
+        var sessionId = _apiFacade.Login();
+        var response = brontoSoapApiProxy.readHeaderFooters(new readHeaderFooters1(new sessionHeader
+        {
+            sessionId = sessionId
+         }, 
+         new readHeaderFooters
+         {
+             includeContent = true,
+             filter = new headerFooterFilter()
+          }));
+
+          // parse the response
+          ...
+        }
+    }
+```
+
+If you want to use the REST Bronto API available for Products and Orders, you can leverage the BrontoRest API Facade:
+
+```C#
+namespace LLCommerceStarterKit.Web
+{
+public class BrontoRestExtension
+{
+    private readonly IBrontoRestApiFacade _restFacade;
+    private readonly IBrontoConfigProvider _brontoConfigProvider;
+
+    public BrontoRestExtension(IBrontoRestApiFacade restFacade, IBrontoConfigProvider brontoConfigProvider)
+    {
+        _restFacade = restFacade;
+        _brontoConfigProvider = brontoConfigProvider;
+    }
+
+    public void GetOrder(int orderId)
+    {
+        string token = _restFacade.GetAccessToken();
+        var client = new HttpClient();
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        var host = _brontoConfigProvider.GetConfig().RestApi.Host;
+
+        var uri = $"{host}/orders/{orderId}";
+        var result = client.GetAsync(uri).Result;
+        var serialized = result.Content.ReadAsStringAsync().Result;
+        var order = JsonHelper.Deserialize<Order>(serialized);
+        ....
+```
+
+You can read more about the available Bronto API objects and functions, for both SOAP and REST services, [here](http://dev.bronto.com/category/api/soap/)

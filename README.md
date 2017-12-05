@@ -3,7 +3,7 @@
 ## What is BrontoConnector
 BrontoConnector is an Episerver connector for the Bronto marketing automation provider.
 
-The current version exports the following data from an Episerver solutions:
+The current version exports the following data from an Episerver solution:
 * Orders
 * Customer data
 * Product information

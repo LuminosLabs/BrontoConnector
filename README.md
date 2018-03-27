@@ -1,6 +1,6 @@
 # BrontoConnector
 
-## What is BrontoConnector
+## What is BrontoConnector?
 BrontoConnector is an Episerver connector for the Bronto marketing automation provider.
 
 The current version exports the following data from an Episerver solution:
@@ -34,6 +34,20 @@ Configure the Bronto APIs endpoints and credentials in your web.config file. Thi
 ```
 
 ## Functionality
+
+### Product Export job
+
+The Bronto\Product Export job will create an XML feed containing all the products from the catalogs and sends the feed to Bronto.
+
+### Customer Export job
+
+The Bronto\Customer Export job will send to Bronto all contacts that were modified or created since the last job run. 
+
+The initial run of the job will migrate all customers to Bronto.
+
+### Order Export job
+
+The Bronto\Order Export job will send to Bronto all purchased orders that were created since the last job run.
 
 ### Export jobs
 
@@ -170,3 +184,50 @@ public class BrontoRestExtension
 ```
 
 You can read more about the available Bronto API objects and functions, for both SOAP and REST services, [here](http://dev.bronto.com/category/api/soap/)
+
+
+# BrontoConnector.Episerver
+## What is BrontoConnector.Episerver?
+BrontoConnector.Episerver is an Episerver module that provides additional functionality to existing BrontoConnector:
+*   Bronto API configuration
+*   Tracking script
+*   Customer settings
+*   Audit
+
+## Bronto API Configuration
+
+This screen allows administrators to configure the API settings for both SOAP and REST web services provided by Bronto. 
+By installing the BrontoConnector.Episerver package, the settings from the web.config file are no longer used and can be safely removed.
+
+![screenshot1](https://content.screencast.com/users/AdrianStanescu/folders/FastStone/media/41a8fbf4-4998-4d4c-b85f-c601719c2ff1/APIConfiguration.png)
+
+## Tracking
+
+This screen allows administrators to register the Bronto tracking script that will be injected on every website page.
+
+![screenshot2](https://content.screencast.com/users/AdrianStanescu/folders/FastStone/media/c9f97a8c-160f-416e-84c9-f2d5e7e3be7e/TrackingConfiguration.png)
+
+## Customer settings
+
+This screen allows administrators to configure the field mapping between the Episerver Customer and Bronto Customer. 
+
+Additionally, administrators can configure if the exported customers will be added automatically to one or more Bronto mailing lists.
+
+For address fields mapping, the administrator can choose which address to be considered when building the values that are exported to Bronto: Billing or Shipping address. The default behavior when choosing the "Billing address" is the following:
+- If user does not have any addresses, the fields will be empty when sent to Bronto
+- If user has multiple billing addresses, the one set as default will be used for populating Bronto fields. If no default address is set (IsDefault field on Address), the first billing address will be used
+- If user has no billing address, the first address found on the customer will be used for populating Bronto fields.
+
+![screenshot3](https://content.screencast.com/users/AdrianStanescu/folders/FastStone/media/dbb8af2a-4f14-4d95-b9d6-8f9dc8a75558/CustomerConfig.png)
+
+## Audit
+
+The Audit screen provides an audit and a history for Customer and Order exports. See below what information is displayed on this screen:
+
+*   Batches - a summary of each Bronto export process.
+*   Audit - list of all records that were processed in the Bronto export process and their statuses.
+*   Logs - informational messages and exceptions that occured during the Bronto export process.
+
+If one of the Batches has at least one error, you have the possibility to retry the batch. When retrying the batch, only the records that are in the "Error" status will be processed and sent to Bronto.
+
+![screenshot4](https://content.screencast.com/users/AdrianStanescu/folders/FastStone/media/17d40aff-7d42-44ca-9487-475f211e70ef/Audit.png)
